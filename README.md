@@ -6,7 +6,7 @@ cheap weekend trips are found.
 ## Goal
 
 Monitor return flights from Gold Coast (OOL) to Sydney (SYD) over
-the coming weeks and identify unusually cheap weekend trips.
+the coming weeks.
 
 ## Planned Features
 

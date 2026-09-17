@@ -57,15 +57,6 @@ def get_response_for_flights(flight_day):
     )
     return response
 
-def print_flight_info(flights):
-    # Print results
-    for flight in flights:
-        print(
-            f"${flight['price']} | "
-            f"{flight['airline']} | "
-            f"{flight['departure_time']}"
-        )
-
 def get_sorted_flights(flight_day, earliest_flight_time):
     response = get_response_for_flights(flight_day)
     soup = BeautifulSoup(response.text, "html.parser")
@@ -107,28 +98,4 @@ def get_sorted_flights(flight_day, earliest_flight_time):
     # Sort eligible flights by price
     eligible_flights.sort(key=lambda flight: flight["price"])
 
-    print_flight_info(eligible_flights)
-
-start_friday = datetime(2026, 9, 18)
-
-number_of_weekends = 5
-
-for i in range(number_of_weekends):
-
-    friday = start_friday + timedelta(weeks=i)
-    sunday = friday + timedelta(days=2)
-
-    friday_date = friday.strftime("%Y-%m-%d")
-    sunday_date = sunday.strftime("%Y-%m-%d")
-
-    friday_url = make_url(departure_airport, arrival_airport, friday_date)
-    sunday_url = make_url(arrival_airport, departure_airport, sunday_date)
-
-    print("\n==============================")
-    print(f"Weekend: {friday_date} → {sunday_date}")
-    print("==============================")
-
-    print("Friday flights:\n")
-    get_sorted_flights(friday_url, earliest_flight_time)
-    print("\nSunday flights:\n")
-    get_sorted_flights(sunday_url, earliest_flight_time)
+    return eligible_flights
