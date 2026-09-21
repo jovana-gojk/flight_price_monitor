@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import datetime, timedelta
 from scraper import get_sorted_flights, make_url
+from email_sender import send_email
 
 def get_next_friday():
     date_today = datetime.now()
@@ -117,6 +118,38 @@ def get_weekend_prices(start_friday, number_of_weekends, origin="OOL", destinati
     return weekend_prices
 
 
+def create_email_body(weekend_prices, departure_airport, arrival_airport):
+    email_body = f"Flight Price Monitor\n\nFrom {departure_airport} to {arrival_airport}:\n"
+
+    for weekend in weekend_prices:
+
+        email_body += "==============================\n"
+        email_body += f"{weekend['friday_date']} → {weekend['sunday_date']}\n"
+        email_body += "==============================\n"
+
+        friday = weekend["friday_flight"]
+        sunday = weekend["sunday_flight"]
+
+        if friday:
+            email_body += (
+                f"Friday: ${friday[1]} | "
+                f"{friday[0]} | "
+                f"{friday[2]} → {friday[3]}\n"
+            )
+
+        if sunday:
+            email_body += (
+                f"Sunday: ${sunday[1]} | "
+                f"{sunday[0]} | "
+                f"{sunday[2]} → {sunday[3]}\n"
+            )
+
+        if friday and sunday:
+            total = friday[1] + sunday[1]
+            email_body += f"Weekend total: ${total}\n"
+
+    return email_body
+
 def main():
     departure_airport = "SYD"
     arrival_airport = "OOL"
@@ -152,36 +185,9 @@ def main():
         origin=departure_airport,
         destination=arrival_airport
     )
-    print(f"\nFrom {departure_airport} to {arrival_airport}:")
-    for weekend in weekend_prices:
 
-        print("==============================")
-        print(
-            f"{weekend['friday_date']} → "
-            f"{weekend['sunday_date']}"
-        )
-        print("==============================")
-
-        friday = weekend["friday_flight"]
-        sunday = weekend["sunday_flight"]
-
-        if friday:
-            print(
-                f"Friday: ${friday[1]} | "
-                f"{friday[0]} | "
-                f"{friday[2]} → {friday[3]}"
-            )
-
-        if sunday:
-            print(
-                f"Sunday: ${sunday[1]} | "
-                f"{sunday[0]} | "
-                f"{sunday[2]} → {sunday[3]}"
-            )
-
-        if friday and sunday:
-            total = friday[1] + sunday[1]
-            print(f"Weekend total: ${total}")
+    email_body = create_email_body(weekend_prices, departure_airport, arrival_airport)
+    send_email(email_body)
 
 
 if __name__ == "__main__":
