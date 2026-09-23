@@ -1,0 +1,48 @@
+# FLIGHT PRICE MONITOR — SERVER SETUP
+
+This file documents how to deploy the flight_price_monitor GitHub repository
+to the Linux home server and configure it to run automatically with Docker
+and cron.
+
+1. CLONE THE GITHUB REPOSITORY
+On the server:
+cd ~
+git clone https://github.com/jovana-gojk/flight_price_monitor.git
+cd ~/flight_price_monitor
+
+## 2. CREATE THE ENVIRONMENT FILE
+Create the .env file on the server:
+nano .env
+
+Add:
+
+EMAIL_ADDRESS=your_email@gmail.com
+EMAIL_PASSWORD=your_gmail_app_password
+RECIPIENT_EMAIL=recipientemail@gmail.com
+
+The Gmail App Password should be entered without spaces.
+
+3. CREATE THE DATA DIRECTORY
+Create the directory used to store the SQLite database:
+
+mkdir -p data
+
+## 4. BUILD THE DOCKER IMAGE
+From the project directory:
+
+docker build -t flight-price-monitor .
+
+## 5. CONFIGURE CRON
+
+Edit the user's crontab:
+
+crontab -e
+
+Add:
+
+0 9 * * 2,5 docker run --rm --env-file /yourdir/flight_price_monitor/.env -v /yourdir/flight_price_monitor/data:/flight_price_monitor/data flight-price-monitor
+
+This runs the program:
+
+Tuesday at 9:00 AM
+Friday at 9:00 AM
