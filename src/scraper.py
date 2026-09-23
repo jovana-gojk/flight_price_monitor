@@ -1,11 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import re
-from datetime import datetime, timedelta
-
-departure_airport = "OOL"
-arrival_airport = "SYD"
-earliest_flight_time = "2:00 PM"
+from datetime import datetime
 
 def make_url(origin, destination, date):
     url = f"https://www.google.com/travel/flights?hl=en&curr=AUD&q=One%20way%20flights%20from%20{origin}%20to%20{destination}%20on%20{date}"
@@ -57,7 +53,7 @@ def get_response_for_flights(flight_day):
     )
     return response
 
-def get_sorted_flights(flight_day, earliest_flight_time):
+def get_eligible_flights(flight_day, earliest_flight_time):
     response = get_response_for_flights(flight_day)
     soup = BeautifulSoup(response.text, "html.parser")
 
