@@ -235,7 +235,7 @@ def main():
 
     email_body = create_email_body(weekend_prices, comparison_prices, departure_airport, arrival_airport)
     send_email(email_body)
-    print(email_body)
+    #print(email_body)
 
 
 if __name__ == "__main__":
