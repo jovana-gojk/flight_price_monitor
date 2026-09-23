@@ -1,25 +1,16 @@
 # Flight Price Monitor
+A Python application that monitors flight prices from SYD to OOL on the weekend and tracks the prices in a database. It then sends an email with the next coming weeks cheapest flight options.
 
-A Python application that monitors flight prices and sends alerts when
-cheap weekend trips are found.
 
-## Goal
-
-Monitor return flights from Gold Coast (OOL) to Sydney (SYD) over
-the coming weeks.
-
-## Planned Features
-
-- Retrieve flight price data
-- Monitor weekend trips
-- Store historical prices
-- Detect unusually cheap flights
-- Send email alerts
-- Run continuously on a home server
-- Provide a web dashboard
+## Features
+- Scrapes flight data from the internet
+- Stores the data in a database
+- Retrieves the cheapest flight from the database
+- Compares these flights to previously retrieved data
+- Send email alerts with the price of every weekend trip within the next 2 months
+- To be run continuously on a home server with Docker and cron for scheduling
 
 ## Technologies
-
 - Python
 - Git
 - SQLite
