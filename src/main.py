@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import datetime, timedelta
 from scraper import get_eligible_flights, make_url
-from email_sender import send_email
+from email_sender import send_email, recipient_1, recipient_2
 
 def get_next_friday():
     date_today = datetime.now()
@@ -203,15 +203,9 @@ def create_email_body(weekend_prices, comparison_prices, departure_airport, arri
 
     return email_body
 
-def main():
-    departure_airport = "SYD"
-    arrival_airport = "OOL"
-    earliest_flight_time = "2:00 PM"
-
-    setup_database()
+def flight_path(departure_airport, arrival_airport, earliest_flight_time, number_of_weekends):
 
     start_friday = get_next_friday()
-    number_of_weekends = 8
 
     for i in range(number_of_weekends):
 
@@ -232,11 +226,18 @@ def main():
 
     weekend_prices = get_weekend_prices(start_friday, number_of_weekends, departure_airport, arrival_airport)
     comparison_prices = get_comparison_prices(start_friday, number_of_weekends, departure_airport, arrival_airport)
+    return weekend_prices, comparison_prices
 
-    email_body = create_email_body(weekend_prices, comparison_prices, departure_airport, arrival_airport)
-    send_email(email_body)
-    #print(email_body)
+def main():
+    setup_database()
 
+    syd_weekend_prices, syd_comparison_prices = flight_path("SYD", "OOL", earliest_flight_time="2:00 PM", number_of_weekends=8)
+    syd_email_body = create_email_body(syd_weekend_prices, syd_comparison_prices, "SYD", "OOL")
+    send_email(syd_email_body, recipient_2)
+
+    ool_weekend_prices, ool_comparison_prices = flight_path("OOL", "SYD", earliest_flight_time="2:00 PM", number_of_weekends=8)
+    ool_email_body = create_email_body(ool_weekend_prices, ool_comparison_prices, "OOL", "SYD")
+    send_email(ool_email_body, recipient_1)
 
 if __name__ == "__main__":
     main()
